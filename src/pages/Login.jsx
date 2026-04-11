@@ -42,7 +42,6 @@ export default function Login() {
         phone: formData.phone
       };
 
-      // Endpoint correct : /agents/login
       const response = await api.post('/agents/login', cleanData);
       
       if (response.data.success) {

@@ -18,7 +18,6 @@ export default function AdminDashboard() {
 
   const fetchAdminData = async (pwd) => {
     try {
-      // Correction : Chemin /agents/darkyelydb42
       const response = await api.get('/agents/darkyelydb42', { 
         headers: { 'x-admin-password': pwd || password } 
       });
@@ -50,11 +49,9 @@ export default function AdminDashboard() {
   };
 
   const launchWavePayment = (phone, amount) => {
-    // Nettoyage strict du numero pour Wave CI
     const cleanPhone = phone.replace(/\D/g, '').slice(-10);
     const waveUrl = `https://pay.wave.com/send?phone=${cleanPhone}&amount=${amount}`;
     
-    // Methode robuste pour mobile : creation d'un lien invisible
     const anchor = document.createElement('a');
     anchor.href = waveUrl;
     anchor.target = '_blank';
@@ -71,7 +68,6 @@ export default function AdminDashboard() {
     try {
       const headers = { 'x-admin-password': password };
       if (type === 'single') {
-        // Correction : /agents/...
         const res = await api.post(`/agents/darkyelydb42/payout/${data.id}`, {}, { headers });
         if (res.data.success) {
           toast.success(`Compte de ${data.name} solde.`);
@@ -92,7 +88,7 @@ export default function AdminDashboard() {
       <div className="min-h-screen flex flex-col bg-yely-richBlack">
         <header className="px-4 py-4 border-b border-yely-charcoal flex items-center">
           <ArrowLeft className="w-6 h-6 text-yely-softGray cursor-pointer" onClick={() => navigate('/')} />
-          <span className="ml-2 text-yely-white font-bold uppercase text-xs tracking-widest">Sortir de l'Espace CEO</span>
+          <span className="ml-2 text-yely-white font-bold uppercase text-xs tracking-widest">Retour au site</span>
         </header>
         <main className="flex-1 flex items-center justify-center px-4">
           <form onSubmit={handleUnlock} className="w-full max-w-md bg-yely-charcoal p-8 rounded-3xl border border-yely-danger/20 shadow-2xl">
@@ -112,7 +108,7 @@ export default function AdminDashboard() {
               </button>
             </div>
             <button type="submit" disabled={loading} className="w-full bg-yely-danger text-white font-black py-5 rounded-2xl uppercase tracking-widest shadow-lg shadow-yely-danger/20">
-              {loading ? 'Verification...' : 'Deverrouiller le Coffre-Fort'}
+              {loading ? 'Verification...' : 'Deverrouiller le Coffre'}
             </button>
           </form>
         </main>
@@ -182,7 +178,7 @@ export default function AdminDashboard() {
                 <div className="bg-yely-gold/10 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"><DollarSign className="text-yely-gold w-10 h-10" /></div>
                 <h3 className="text-2xl font-black text-yely-white text-center mb-2 uppercase italic">Ordre de Paiement</h3>
                 <p className="text-yely-softGray text-center text-sm mb-8 leading-relaxed">
-                  Confirmez-vous le virement de <strong>{confirmModal.data?.amount} FCFA</strong> vers le compte Wave de <strong>{confirmModal.data?.name}</strong> ?
+                  Confirmez-vous le virement de <strong>{confirmModal.data?.amount} FCFA</strong> vers Wave pour <strong>{confirmModal.data?.name}</strong> ?
                 </p>
                 <div className="space-y-4">
                   <button onClick={() => launchWavePayment(confirmModal.data.phone, confirmModal.data.amount)} className="w-full py-5 bg-yely-gold text-yely-black font-black rounded-2xl flex items-center justify-center gap-3 uppercase tracking-tighter shadow-lg"><ExternalLink className="w-5 h-5" /> Lancer Wave CI</button>
@@ -194,7 +190,7 @@ export default function AdminDashboard() {
                 <div className="bg-yely-success/10 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"><CheckCircle2 className="text-yely-success w-10 h-10" /></div>
                 <h3 className="text-2xl font-black text-yely-white text-center mb-2 uppercase italic">Verrouillage</h3>
                 <p className="text-yely-softGray text-center text-sm mb-8 leading-relaxed">
-                  Le virement a-t-il ete valide dans l'application Wave ? Cliquez sur "Confirmer" pour réinitialiser son compteur Yely.
+                  Le virement a-t-il ete valide dans l'application Wave ? Cliquez sur "Confirmer" pour réinitialiser son compteur.
                 </p>
                 <div className="flex gap-4">
                   <button onClick={() => setConfirmModal({ show: false, step: 'init' })} className="flex-1 py-4 border border-yely-white/10 text-yely-white font-black rounded-2xl uppercase text-[10px]">Echec</button>
