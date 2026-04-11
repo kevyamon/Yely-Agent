@@ -48,17 +48,27 @@ export default function AdminDashboard() {
     } finally { setLoading(false); }
   };
 
-  const launchWavePayment = (phone, amount) => {
+  // CORRECTION : Lancement natif de l'application Wave CI
+  const launchWavePayment = async (phone, amount) => {
     const cleanPhone = phone.replace(/\D/g, '').slice(-10);
-    const waveUrl = `https://pay.wave.com/send?phone=${cleanPhone}&amount=${amount}`;
     
-    const anchor = document.createElement('a');
-    anchor.href = waveUrl;
-    anchor.target = '_blank';
-    anchor.rel = 'noopener noreferrer';
-    anchor.click();
-    
-    setConfirmModal(prev => ({ ...prev, step: 'verify' }));
+    try {
+      // 1. On copie le numéro pour faciliter le collage dans Wave
+      await navigator.clipboard.writeText(cleanPhone);
+      toast.success(`Numéro ${cleanPhone} copié ! Ouverture de Wave...`);
+      
+      // 2. On utilise le scheme URL natif pour ouvrir l'app Wave au lieu du site web
+      window.location.href = "wave://";
+      
+      // 3. On passe le modal à l'étape de vérification après un court délai
+      setTimeout(() => {
+        setConfirmModal(prev => ({ ...prev, step: 'verify' }));
+      }, 1500);
+      
+    } catch (err) {
+      toast.error("Copiez le numéro manuellement svp.");
+      setConfirmModal(prev => ({ ...prev, step: 'verify' }));
+    }
   };
 
   const executeFinalPayout = async () => {

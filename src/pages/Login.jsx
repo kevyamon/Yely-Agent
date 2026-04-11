@@ -62,7 +62,8 @@ export default function Login() {
   return (
     <div className="min-h-screen flex flex-col bg-yely-richBlack">
       <header className="px-4 py-4 flex items-center border-b border-yely-charcoal">
-        <button onClick={() => navigate(-1)} className="p-2 -ml-2 rounded-full hover:bg-yely-charcoal text-yely-softGray">
+        {/* CORRECTION DE LA BOUCLE DE NAVIGATION : On force la direction vers '/' */}
+        <button onClick={() => navigate('/')} className="p-2 -ml-2 rounded-full hover:bg-yely-charcoal text-yely-softGray">
           <ArrowLeft className="w-6 h-6" />
         </button>
         <span className="text-yely-white font-bold ml-2 text-sm uppercase tracking-widest">Retour</span>
