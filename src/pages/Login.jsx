@@ -1,7 +1,7 @@
 // src/pages/Login.jsx
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { User, Phone, ArrowLeft } from 'lucide-react';
+import { User, Phone, ArrowLeft, ShieldCheck } from 'lucide-react';
 import api from '../services/api';
 
 export default function Login() {
@@ -29,7 +29,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (formData.phone.length !== 10) {
-      setError('Le numéro doit comporter exactement 10 chiffres.');
+      setError('Le numero doit comporter exactement 10 chiffres.');
       return;
     }
 
@@ -42,10 +42,10 @@ export default function Login() {
         phone: formData.phone
       };
 
+      // Endpoint correct : /agents/login
       const response = await api.post('/agents/login', cleanData);
       
       if (response.data.success) {
-        // Sauvegarde longue durée (localStorage)
         localStorage.setItem('agentToken', response.data.data.accessToken);
         localStorage.setItem('agentInfo', JSON.stringify(response.data.data.agent));
         localStorage.setItem('savedAgentId', cleanData.agentId);
@@ -66,25 +66,25 @@ export default function Login() {
         <button onClick={() => navigate(-1)} className="p-2 -ml-2 rounded-full hover:bg-yely-charcoal text-yely-softGray">
           <ArrowLeft className="w-6 h-6" />
         </button>
-        <span className="text-yely-white font-bold ml-2">Retour</span>
+        <span className="text-yely-white font-bold ml-2 text-sm uppercase tracking-widest">Retour</span>
       </header>
 
       <main className="flex-1 flex flex-col items-center justify-center px-4 py-8">
         <div className="w-full max-w-md bg-yely-charcoal rounded-3xl shadow-2xl p-8 border border-yely-black">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-yely-gold tracking-wider uppercase">Yély Agent</h1>
-            <p className="text-yely-softGray mt-2 text-sm italic">Accès Partenaire</p>
+            <h1 className="text-3xl font-black text-yely-gold tracking-widest uppercase italic">Yely Agent</h1>
+            <p className="text-yely-softGray mt-2 text-xs uppercase tracking-tighter">Acces Partenaire Securise</p>
           </div>
 
           {error && (
-            <div className="bg-yely-danger/20 border border-yely-danger text-yely-offWhite px-4 py-3 rounded-xl mb-6 text-sm">
+            <div className="bg-yely-danger/20 border border-yely-danger text-yely-offWhite px-4 py-3 rounded-xl mb-6 text-sm text-center">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-yely-softGray text-sm font-medium mb-2">ID Ambassadeur</label>
+              <label className="block text-yely-softGray text-xs font-bold uppercase mb-2 ml-1">ID Ambassadeur</label>
               <div className="relative">
                 <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-yely-gold" />
                 <input
@@ -93,13 +93,13 @@ export default function Login() {
                   value={formData.agentId}
                   onChange={handleIdChange}
                   required
-                  className="w-full pl-12 pr-4 py-4 bg-yely-black border border-yely-charcoal rounded-xl text-yely-white outline-none focus:border-yely-gold uppercase transition-all"
+                  className="w-full pl-12 pr-4 py-4 bg-yely-black border border-yely-charcoal rounded-xl text-yely-white outline-none focus:border-yely-gold uppercase transition-all font-bold"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-yely-softGray text-sm font-medium mb-2">Téléphone</label>
+              <label className="block text-yely-softGray text-xs font-bold uppercase mb-2 ml-1">Telephone</label>
               <div className="relative">
                 <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-yely-gold" />
                 <input
@@ -108,7 +108,7 @@ export default function Login() {
                   value={formData.phone}
                   onChange={handlePhoneChange}
                   required
-                  className="w-full pl-12 pr-4 py-4 bg-yely-black border border-yely-charcoal rounded-xl text-yely-white outline-none focus:border-yely-gold tracking-widest transition-all"
+                  className="w-full pl-12 pr-4 py-4 bg-yely-black border border-yely-charcoal rounded-xl text-yely-white outline-none focus:border-yely-gold tracking-[0.3em] transition-all font-bold"
                 />
               </div>
             </div>
@@ -116,15 +116,16 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading || formData.phone.length !== 10 || !formData.agentId}
-              className="w-full bg-yely-gold hover:bg-yely-goldLight text-yely-black font-black py-4 rounded-xl transition-all disabled:opacity-30 text-lg uppercase shadow-lg shadow-yely-gold/10"
+              className="w-full bg-yely-gold hover:bg-yely-goldLight text-yely-black font-black py-4 rounded-xl transition-all disabled:opacity-30 text-lg uppercase shadow-lg shadow-yely-gold/10 flex items-center justify-center gap-2"
             >
-              {loading ? 'Connexion...' : 'Ouvrir ma Session'}
+              <ShieldCheck className="w-5 h-5" />
+              {loading ? 'Verification...' : 'Ouvrir ma Session'}
             </button>
           </form>
 
           <div className="mt-8 text-center">
             <p className="text-yely-softGray text-xs">
-              Pas encore de compte ? <Link to="/register" className="text-yely-gold hover:underline font-bold">Rejoindre l'aventure</Link>
+              Pas encore de compte ? <Link to="/register" className="text-yely-gold hover:underline font-bold uppercase">Rejoindre l'equipe</Link>
             </p>
           </div>
         </div>
