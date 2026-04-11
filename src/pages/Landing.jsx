@@ -1,8 +1,8 @@
 // src/pages/Landing.jsx
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion';
-import { UserCheck, Shield, Zap, ArrowUp, ChevronRight, Download, Star, Sparkles } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowRight, Wallet, BadgeCheck, Zap, ShieldCheck, ArrowUp, Download } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-toastify';
 
 export default function Landing() {
@@ -10,15 +10,13 @@ export default function Landing() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const longPressTimer = useRef(null);
-  
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
 
   useEffect(() => {
-    // Affiche le bouton ScrollToTop à la moitié de l'écran environ
-    const handleScroll = () => setShowScrollTop(window.scrollY > window.innerHeight / 2);
+    // Apparition du bouton scroll à partir de 300px
+    const handleScroll = () => setShowScrollTop(window.scrollY > 300);
     window.addEventListener('scroll', handleScroll);
     
+    // Intercepte l'événement d'installation PWA
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
@@ -38,13 +36,11 @@ export default function Landing() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // LOGIQUE SECRET CEO (Long press 10s exactes)
+  // LOGIQUE SECRET CEO (10 secondes exactes)
   const startLongPress = (e) => {
-    // Empêche le clic droit ou la sélection sur mobile
-    if (e.type === 'touchstart') e.preventDefault(); 
-    
+    if (e.type === 'touchstart') e.preventDefault(); // Bloque la sélection sur mobile
     longPressTimer.current = setTimeout(() => {
-      toast.info("Identification CEO requise...", { autoClose: 1500 });
+      toast.info("Identification CEO...");
       navigate('/darkyelydb42');
     }, 10000); 
   };
@@ -53,100 +49,110 @@ export default function Landing() {
     if (longPressTimer.current) clearTimeout(longPressTimer.current);
   };
 
+  const currentYear = new Date().getFullYear();
+
   return (
-    <div className="min-h-screen bg-yely-richBlack text-yely-white overflow-x-hidden selection:bg-yely-gold selection:text-yely-black font-sans">
-      <motion.div className="fixed top-0 left-0 right-0 h-1.5 bg-yely-gold origin-left z-50" style={{ scaleX }} />
+    <div className="min-h-screen bg-yely-richBlack text-yely-white font-sans selection:bg-yely-gold selection:text-black flex flex-col relative overflow-hidden">
+      
+      {/* Effets de lumiere en arriere-plan (Glow) */}
+      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-yely-gold opacity-10 rounded-full blur-[120px] pointer-events-none"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-yely-gold opacity-5 rounded-full blur-[100px] pointer-events-none"></div>
 
-      {/* Background Lumineux */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <motion.div 
-          animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.15, 0.1] }}
-          transition={{ duration: 15, repeat: Infinity }}
-          className="absolute -top-40 -left-40 w-[600px] h-[600px] bg-yely-gold rounded-full blur-[150px]" 
-        />
-        <motion.div 
-          animate={{ x: [0, 50, 0], opacity: [0.03, 0.08, 0.03] }}
-          transition={{ duration: 20, repeat: Infinity }}
-          className="absolute top-1/2 -right-40 w-[500px] h-[500px] bg-yely-danger rounded-full blur-[130px]" 
-        />
-      </div>
-
-      <main className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 pt-10 text-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="flex items-center gap-2 bg-yely-gold/10 border border-yely-gold/20 px-5 py-2.5 rounded-full mb-10 shadow-lg"
-        >
-          <Sparkles className="w-4 h-4 text-yely-gold animate-pulse" />
-          <span className="text-[10px] font-black uppercase tracking-[0.3em] text-yely-goldLight">
-            Reseau de parrainage n.1 en CI
+      {/* Navigation Bar */}
+      <nav className="relative z-10 px-8 py-6 flex justify-between items-center border-b border-yely-white/5 bg-yely-richBlack/50 backdrop-blur-md">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-gradient-to-br from-yely-goldLight to-yely-goldDark rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(212,175,55,0.3)]">
+            <span className="text-black font-bold text-xl tracking-tighter">Y</span>
+          </div>
+          <span className="text-2xl font-black text-white tracking-widest uppercase">
+            Yély <span className="text-yely-gold font-light">Agent</span>
           </span>
-        </motion.div>
-
-        <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-          <h1 className="text-6xl md:text-9xl font-black mb-6 tracking-tighter italic">
-            YELY <span className="text-yely-gold drop-shadow-[0_0_30px_rgba(212,175,55,0.4)]">AGENT</span>
-          </h1>
-        </motion.div>
-
-        <motion.p 
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
-          className="max-w-2xl text-lg md:text-2xl text-yely-softGray mb-14 font-medium leading-relaxed px-4"
-        >
-          Transformez chaque parrainage en cash instantané. 
-          Devenez le moteur de la croissance Yely sur le terrain.
-        </motion.p>
-
-        <div className="flex flex-col sm:flex-row items-center gap-6 w-full max-w-xl px-6">
-          <motion.button 
-            whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-            onClick={() => navigate('/register')}
-            className="w-full bg-yely-gold text-yely-black py-6 rounded-[2rem] font-black text-xl flex items-center justify-center gap-4 transition-all shadow-[0_0_30px_rgba(212,175,55,0.2)] hover:shadow-[0_0_40px_rgba(212,175,55,0.4)] relative overflow-hidden group"
+        </div>
+        
+        <div className="flex gap-4 items-center">
+          <Link 
+            to="/login" 
+            className="hidden md:block text-yely-softGray hover:text-yely-gold transition-colors font-medium px-4 py-2"
           >
-            <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 skew-x-12"></div>
-            DEVENIR AGENT
-            <ChevronRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
-          </motion.button>
+            Espace Agent
+          </Link>
+          <Link 
+            to="/register" 
+            className="bg-yely-gold/10 hover:bg-yely-gold border border-yely-gold text-yely-gold hover:text-black font-bold py-2 px-6 rounded-full transition-all duration-300 shadow-[0_0_10px_rgba(212,175,55,0.1)] hover:shadow-[0_0_20px_rgba(212,175,55,0.4)]"
+          >
+            Rejoindre
+          </Link>
+        </div>
+      </nav>
 
+      {/* Hero Section */}
+      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-20 text-center">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-yely-white/5 border border-yely-white/10 mb-8 backdrop-blur-sm">
+          <span className="w-2 h-2 rounded-full bg-yely-success animate-pulse"></span>
+          <span className="text-sm font-medium text-yely-softGray tracking-wide">Recrutement ouvert a Maféré</span>
+        </div>
+
+        <h1 className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-yely-softGray mb-6 tracking-tight leading-tight max-w-4xl">
+          Transformez votre réseau en <br className="hidden md:block"/>
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-yely-goldLight via-yely-gold to-yely-goldDark">
+            Revenus Illimités
+          </span>
+        </h1>
+        
+        <p className="text-yely-softGray text-lg md:text-xl max-w-2xl mb-12 leading-relaxed font-light">
+          Devenez le visage officiel de la révolution VTC. Accompagnez les habitants dans l'installation de l'application et recevez des commissions instantanées pour chaque compte validé.
+        </p>
+
+        <div className="flex flex-col sm:flex-row items-center gap-4">
+          {/* CTA Principal Survitaminé */}
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Link 
+              to="/register" 
+              className="group relative flex items-center justify-center gap-3 bg-gradient-to-r from-yely-gold to-yely-goldDark text-black font-black text-lg py-5 px-10 rounded-full transition-all shadow-[0_10px_30px_rgba(212,175,55,0.3)] overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+              <span className="relative z-10 uppercase tracking-wide">Devenir Agent</span>
+              <ArrowRight className="relative z-10 w-6 h-6 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </motion.div>
+
+          {/* Bouton d'Installation PWA */}
           {deferredPrompt && (
             <motion.button 
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} onClick={handleInstallClick}
-              className="w-full sm:w-auto bg-yely-white/5 border border-yely-white/10 text-yely-white px-8 py-6 rounded-[2rem] font-bold text-sm flex items-center justify-center gap-3 hover:bg-yely-white/10 transition-all uppercase tracking-widest"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+              onClick={handleInstallClick}
+              className="flex items-center gap-2 bg-yely-white/5 border border-yely-white/10 hover:bg-yely-white/10 text-yely-white font-medium py-5 px-8 rounded-full transition-all"
             >
               <Download className="w-5 h-5 text-yely-gold" />
-              Installer l'app
+              Installer l'App
             </motion.button>
           )}
         </div>
-        
-        <motion.div 
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}
-          onClick={() => navigate('/login')}
-          className="mt-10 text-yely-softGray text-xs font-black uppercase tracking-widest cursor-pointer hover:text-yely-gold transition-colors"
-        >
-          Deja membre ? Se connecter
-        </motion.div>
-      </main>
 
-      {/* SECTION DES ARGUMENTS */}
-      <section className="max-w-6xl mx-auto px-6 py-32 grid md:grid-cols-3 gap-10 relative z-10">
-        {[
-          { icon: Zap, title: "Cash Flow", desc: "Retraits directs sur Wave CI sans delais de traitement." },
-          { icon: Shield, title: "Bank Grade", desc: "Vos donnees et vos gains sont proteges par notre Iron Dome." },
-          { icon: Star, title: "Elite Club", desc: "Bonus exclusifs pour le Top 5 des meilleurs ambassadeurs." }
-        ].map((item, idx) => (
-          <motion.div
-            key={idx} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }} viewport={{ once: true }}
-            className="bg-yely-charcoal/30 backdrop-blur-3xl p-10 rounded-[2.5rem] border border-yely-white/5 hover:border-yely-gold/20 transition-all group"
-          >
-            <div className="bg-yely-black w-16 h-16 rounded-2xl flex items-center justify-center mb-8 border border-yely-white/5 group-hover:border-yely-gold/40 transition-all">
-              <item.icon className="text-yely-gold w-8 h-8" />
-            </div>
-            <h3 className="text-2xl font-black mb-4 uppercase italic tracking-tighter">{item.title}</h3>
-            <p className="text-yely-softGray text-sm leading-relaxed font-medium">{item.desc}</p>
-          </motion.div>
-        ))}
-      </section>
+        {/* Feature Cards (Glassmorphism intact) */}
+        <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl w-full px-4">
+          <div className="bg-yely-charcoal/40 backdrop-blur-md p-8 rounded-3xl border border-yely-white/5 hover:border-yely-gold/30 transition-colors group text-left relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-yely-gold/5 rounded-bl-[100px] -z-10 group-hover:bg-yely-gold/10 transition-colors"></div>
+            <Wallet className="w-12 h-12 text-yely-gold mb-6" />
+            <h3 className="text-2xl font-bold text-white mb-3">Commissions Directes</h3>
+            <p className="text-yely-softGray leading-relaxed">Une remuneration transparente et versee immediatement sur votre solde pour chaque utilisateur actif que vous connectez au reseau.</p>
+          </div>
+
+          <div className="bg-yely-charcoal/40 backdrop-blur-md p-8 rounded-3xl border border-yely-white/5 hover:border-yely-gold/30 transition-colors group text-left relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-yely-gold/5 rounded-bl-[100px] -z-10 group-hover:bg-yely-gold/10 transition-colors"></div>
+            <BadgeCheck className="w-12 h-12 text-yely-gold mb-6" />
+            <h3 className="text-2xl font-bold text-white mb-3">Statut Officiel</h3>
+            <p className="text-yely-softGray leading-relaxed">Travailler avec nous vous donne droit a une dotation complete : badges d'identification, t-shirts premium et materiel marketing.</p>
+          </div>
+
+          <div className="bg-yely-charcoal/40 backdrop-blur-md p-8 rounded-3xl border border-yely-white/5 hover:border-yely-gold/30 transition-colors group text-left relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-yely-gold/5 rounded-bl-[100px] -z-10 group-hover:bg-yely-gold/10 transition-colors"></div>
+            <ShieldCheck className="w-12 h-12 text-yely-gold mb-6" />
+            <h3 className="text-2xl font-bold text-white mb-3">Formation Premium</h3>
+            <p className="text-yely-softGray leading-relaxed">Developpez vos competences commerciales. Nous vous formons gratuitement aux meilleures techniques de vente sur le terrain.</p>
+          </div>
+        </div>
+      </main>
 
       {/* BOUTON SCROLL TO TOP & EASTER EGG CEO */}
       <AnimatePresence>
@@ -158,27 +164,25 @@ export default function Landing() {
             
             onClick={handleScrollToTopClick}
             
-            // Events pour le Long Press (10s)
             onMouseDown={startLongPress}
             onMouseUp={stopLongPress}
             onMouseLeave={stopLongPress}
             onTouchStart={startLongPress}
             onTouchEnd={stopLongPress}
             
-            // CSS critiques pour mobile : empeche le clic droit / selection
+            // Sécurité anti-sélection texte sur mobile
             style={{ WebkitTouchCallout: 'none', userSelect: 'none' }}
             
-            className="fixed bottom-10 right-10 p-5 bg-yely-gold text-yely-black rounded-full shadow-[0_10px_40px_rgba(212,175,55,0.4)] z-50 active:scale-90 transition-transform cursor-pointer overflow-hidden group"
+            className="fixed bottom-8 right-8 p-4 bg-yely-gold text-black rounded-full shadow-[0_5px_20px_rgba(212,175,55,0.4)] z-50 group active:scale-90 transition-transform cursor-pointer"
           >
-            <ArrowUp className="w-7 h-7 font-black group-hover:-translate-y-1 transition-transform" />
-            <div className="absolute inset-0 rounded-full border-4 border-yely-black/10 scale-110"></div>
+            <ArrowUp className="w-6 h-6 font-black group-hover:-translate-y-1 transition-transform" />
           </motion.button>
         )}
       </AnimatePresence>
 
-      <footer className="py-20 text-center">
-        <p className="text-[10px] text-yely-softGray font-black uppercase tracking-[0.5em] opacity-40">
-          &copy; 2026 Yely Mobile S.A. | Iron Dome Protection
+      <footer className="relative z-10 py-8 text-center border-t border-yely-white/5 bg-yely-richBlack/80 mt-12">
+        <p className="text-yely-softGray/50 text-sm tracking-wide">
+          © {currentYear} Yély. Tous droits réservés.
         </p>
       </footer>
     </div>
