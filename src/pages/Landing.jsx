@@ -1,33 +1,21 @@
-// src/pages/Landing.jsx
-import { useState, useEffect, useRef } from 'react';
+//src/pages/Landing.jsx
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, Wallet, BadgeCheck, ShieldCheck, ArrowUp, Download } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, Wallet, BadgeCheck, ShieldCheck, Download } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
+import ScrollToTop from '../components/ScrollToTop';
+import Footer from '../components/Footer';
 
 export default function Landing() {
   const navigate = useNavigate();
-  const [showScrollTop, setShowScrollTop] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState(null);
-  const longPressTimer = useRef(null);
 
   useEffect(() => {
-    const handleScroll = () => {
-      // Le bouton apparait après 300px de scroll
-      setShowScrollTop(window.scrollY > 300);
-    };
-    window.addEventListener('scroll', handleScroll);
-    
-    // Interception de l'installation PWA
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
     });
-
-    // Check initial
-    handleScroll();
-
-    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleInstallClick = async () => {
@@ -42,47 +30,33 @@ export default function Landing() {
     }
   };
 
-  const startLongPress = (e) => {
-    if (e.type === 'touchstart') e.preventDefault(); // Bloque le menu système sur mobile
-    longPressTimer.current = setTimeout(() => {
-      toast.info("Identification CEO...", { autoClose: 1500 });
-      navigate('/darkyelydb42');
-    }, 10000); 
-  };
-
-  const stopLongPress = () => {
-    if (longPressTimer.current) clearTimeout(longPressTimer.current);
-  };
-
-  const currentYear = new Date().getFullYear();
-
   return (
-    <div className="min-h-screen bg-yely-richBlack text-yely-white font-sans selection:bg-yely-gold selection:text-black flex flex-col relative">
+    <div className="min-h-full bg-yely-richBlack text-yely-white font-sans selection:bg-yely-gold selection:text-black flex flex-col relative overflow-x-hidden">
       
-      {/* Effets de lumiere en arriere-plan (Glow) */}
+      {/* ANCRE ABSOLUE POUR LE SCROLL TO TOP */}
+      <div id="top-anchor"></div>
+
       <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-yely-gold opacity-10 rounded-full blur-[120px] pointer-events-none"></div>
       <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-yely-gold opacity-5 rounded-full blur-[100px] pointer-events-none"></div>
 
-      {/* Navigation Bar Epurée */}
       <nav className="relative z-10 px-8 py-6 flex justify-center items-center border-b border-yely-white/5 bg-yely-richBlack/50 backdrop-blur-md">
         <span className="text-3xl font-black text-white tracking-widest uppercase">
           Yély <span className="text-yely-gold font-light">Agent</span>
         </span>
       </nav>
 
-      {/* Hero Section */}
-      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-20 text-center">
+      <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 pt-8 pb-24 text-center w-full">
         <motion.div 
           initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} 
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-yely-white/5 border border-yely-white/10 mb-8 backdrop-blur-sm"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-yely-white/5 border border-yely-white/10 mb-6 backdrop-blur-sm"
         >
           <span className="w-2 h-2 rounded-full bg-yely-success animate-pulse"></span>
-          <span className="text-sm font-medium text-yely-softGray tracking-wide">Recrutement ouvert a Maféré</span>
+          <span className="text-sm font-medium text-yely-softGray tracking-wide">Recrutement ouvert à Maféré</span>
         </motion.div>
 
         <motion.h1 
           initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }}
-          className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-yely-softGray mb-6 tracking-tight leading-tight max-w-4xl"
+          className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-yely-softGray mb-4 tracking-tight leading-tight max-w-4xl"
         >
           Transformez votre réseau en <br className="hidden md:block"/>
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-yely-goldLight via-yely-gold to-yely-goldDark">
@@ -92,13 +66,12 @@ export default function Landing() {
         
         <motion.p 
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}
-          className="text-yely-softGray text-lg md:text-xl max-w-2xl mb-14 leading-relaxed font-light"
+          className="text-yely-softGray text-lg md:text-xl max-w-2xl mb-8 leading-relaxed font-light"
         >
           Devenez le visage officiel de la révolution VTC. Accompagnez les habitants dans l'installation de l'application et recevez des commissions instantanées pour chaque compte validé.
         </motion.p>
 
         <div className="flex flex-col items-center gap-6 w-full max-w-md">
-          {/* CTA Principal Ultra Mis En Avant */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
             className="w-full"
@@ -121,7 +94,6 @@ export default function Landing() {
              Déjà membre ? Se connecter
           </motion.div>
 
-          {/* Bouton d'Installation PWA */}
           <motion.button 
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}
             onClick={handleInstallClick}
@@ -132,12 +104,11 @@ export default function Landing() {
           </motion.button>
         </div>
 
-        {/* Feature Cards Animées */}
-        <div className="mt-32 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl w-full px-4">
+        <div className="mt-20 md:mt-32 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl w-full px-4">
           {[
-            { icon: Wallet, title: "Commissions Directes", desc: "Une remuneration transparente et versee immediatement sur votre solde pour chaque utilisateur actif." },
-            { icon: BadgeCheck, title: "Statut Officiel", desc: "Travailler avec nous vous donne droit a une dotation : badges d'identification, t-shirts et materiel marketing." },
-            { icon: ShieldCheck, title: "Formation Premium", desc: "Developpez vos competences. Nous vous formons gratuitement aux meilleures techniques de vente." }
+            { icon: Wallet, title: "Commissions Directes", desc: "Une rémunération transparente et versée immédiatement sur votre solde pour chaque utilisateur actif." },
+            { icon: BadgeCheck, title: "Statut Officiel", desc: "Travailler avec nous vous donne droit à une dotation : badges d'identification, t-shirts et matériel marketing." },
+            { icon: ShieldCheck, title: "Formation Premium", desc: "Développez vos compétences. Nous vous formons gratuitement aux meilleures techniques de vente." }
           ].map((item, idx) => (
             <motion.div 
               key={idx}
@@ -156,36 +127,8 @@ export default function Landing() {
         </div>
       </main>
 
-      {/* BOUTON SCROLL TO TOP & EASTER EGG CEO */}
-      <AnimatePresence>
-        {showScrollTop && (
-          <motion.button
-            initial={{ opacity: 0, scale: 0.5, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.5, y: 20 }}
-            
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            
-            onMouseDown={startLongPress}
-            onMouseUp={stopLongPress}
-            onMouseLeave={stopLongPress}
-            onTouchStart={startLongPress}
-            onTouchEnd={stopLongPress}
-            
-            style={{ WebkitTouchCallout: 'none', userSelect: 'none' }}
-            
-            className="fixed bottom-10 right-10 p-5 bg-yely-gold text-black rounded-full shadow-[0_5px_20px_rgba(212,175,55,0.4)] z-50 group active:scale-90 transition-transform cursor-pointer"
-          >
-            <ArrowUp className="w-7 h-7 font-black group-hover:-translate-y-1 transition-transform" />
-          </motion.button>
-        )}
-      </AnimatePresence>
-
-      <footer className="relative z-10 py-8 text-center border-t border-yely-white/5 bg-yely-richBlack mt-20">
-        <p className="text-yely-softGray font-medium tracking-widest uppercase text-xs">
-          © {currentYear} Yély. Tous droits réservés.
-        </p>
-      </footer>
+      <ScrollToTop />
+      <Footer />
     </div>
   );
 }
