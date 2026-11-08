@@ -1,3 +1,5 @@
+import colors from './src/theme/colors.js';
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -7,21 +9,26 @@ export default {
   theme: {
     extend: {
       colors: {
+        theme: colors,
         yely: {
-          gold: '#D4AF37',
-          goldLight: '#F3E5AB',
-          goldDark: '#AA8C2C',
-          black: '#000000',
-          richBlack: '#0A0A0A',
-          charcoal: '#121212',
-          white: '#FFFFFF',
-          offWhite: '#F8F9FA',
-          softGray: '#E9ECEF',
-          success: '#27AE60',
-          danger: '#C0392B',
+          gold: colors.gold.DEFAULT,
+          goldLight: colors.gold.light,
+          goldDark: colors.gold.dark,
+          black: colors.surface.black,
+          richBlack: colors.surface.richBlack,
+          charcoal: colors.surface.charcoal,
+          card: colors.surface.card,
+          white: colors.text.white,
+          offWhite: colors.text.offWhite,
+          softGray: colors.text.softGray,
+          muted: colors.text.muted,
+          success: colors.status.success,
+          warning: colors.status.warning,
+          danger: colors.status.danger,
+          info: colors.status.info,
         }
       }
     },
   },
   plugins: [],
-}
+};
